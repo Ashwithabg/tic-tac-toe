@@ -7,25 +7,29 @@ class Board extends React.Component {
         super(props);
 
         this.state = {
-            squares: Array(9).fill(null)
+            squares: Array(9).fill(null),
+            xIsNext: true
         };
     }
 
     renderSquareWith(position) {
         return <Square
             value={this.state.squares[position]}
-            onClick = {() => this.handleClick(position)}
+            onClick={() => this.handleClick(position)}
         />
     }
 
     handleClick = (position) => {
-      const squares = this.state.squares.slice();
-      squares[position] = 'X';
-      this.setState({squares: squares})
+        const squares = this.state.squares.slice();
+        squares[position] = this.state.xIsNext ? 'X' : 'O';
+        this.setState({
+            squares: squares,
+            xIsNext: !this.state.xIsNext
+        })
     };
 
     render() {
-        const status = "next Player: X";
+        const status = "next Player:" + (this.state.xIsNext ? 'X' : 'O');
 
         return (
             <div>
