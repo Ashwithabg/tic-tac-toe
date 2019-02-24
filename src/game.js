@@ -65,7 +65,7 @@ class Game extends React.Component {
         let status;
 
         if (winner) {
-            status = "Winner: " + winner
+            status = "Winner: " + winner['player']
         } else if (history.length === 10) {
             status = 'No one wins!!'
         } else {
@@ -86,6 +86,7 @@ class Game extends React.Component {
             <div className="game">
                 <div className="game-board">
                     <Board
+                        winner = {winner ? winner['squares']: null}
                         squares={current.squares}
                         onClick={i => this.handleClick(i)}
                     />

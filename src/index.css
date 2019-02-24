@@ -85,3 +85,7 @@ ol, ul {
     color: black;
     font-weight: bold;
 }
+
+.winner {
+    background-color: aquamarine;
+}

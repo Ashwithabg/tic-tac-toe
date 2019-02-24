@@ -4,9 +4,11 @@ import Square from './square';
 const boardSize = 3;
 
 class Board extends React.Component {
-    renderSquare(position) {
+    renderSquare(position, winner) {
         return (
             <Square
+                key = {"square"+ position}
+                winner = {winner}
                 value={this.props.squares[position]}
                 onClick={() => this.props.onClick(position)}
             />
@@ -20,7 +22,8 @@ class Board extends React.Component {
 
             for (let j = 0; j < boardSize; j++) {
                 const index = i * boardSize + j;
-                squares[j] = this.renderSquare(index)
+                const winner = this.props.winner && this.props.winner.includes(index);
+                squares[j] = this.renderSquare(index, winner)
             }
 
             rows[i] = (
