@@ -49,24 +49,8 @@ class Game extends React.Component {
         const history = this.state.history;
         const current = history[this.state.stepNumber];
         const winner = calculateWinner(current.squares);
-        let status;
-
-        if (winner) {
-            status = "Winner: " + winner
-        } else if (history.length === 10) {
-            status = 'No one wins!!'
-        } else {
-            status = "Next player: " + this.nextSquareState()
-        }
-
-        const moves = history.map((step, move) => {
-            const desc = move ? 'Go to move #' + move + ":" + step.coordinates : 'Go to game start';
-            return (
-                <li key={move}>
-                    <button className="moves" onClick={() => this.jumpTo(move)}>{desc}</button>
-                </li>
-            );
-        });
+        let status = this.getStatus(winner, history);
+        const moves = this.getHistoriesButtons(history);
 
         return (
             <div className="game">
@@ -82,6 +66,39 @@ class Game extends React.Component {
                 </div>
             </div>
         );
+    }
+
+    getHistoriesButtons(history) {
+        const moves = history.map((step, move) => {
+            let desc;
+            if (move === this.state.stepNumber ) {
+                desc = <b>{'Go to move #' + move + ":" + step.coordinates} </b>
+            }else if(move) {
+                desc = 'Go to move #' + move + ":" + step.coordinates
+            }else {
+                desc = 'Go to game start'
+            }
+
+            return (
+                <li key={move}>
+                    <button className="moves" onClick={() => this.jumpTo(move)}>{desc}</button>
+                </li>
+            );
+        });
+        return moves;
+    }
+
+    getStatus(winner, history) {
+        let status;
+
+        if (winner) {
+            status = "Winner: " + winner
+        } else if (history.length === 10) {
+            status = 'No one wins!!'
+        } else {
+            status = "Next player: " + this.nextSquareState()
+        }
+        return status;
     }
 }
 
