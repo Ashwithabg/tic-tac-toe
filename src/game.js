@@ -8,15 +8,18 @@ class Game extends React.Component {
         this.state = {
             history: [{squares: Array(9).fill(null)}],
             stepNumber: 0,
-            xIsNext: true
+            xIsNext: true,
+            isMovesReverseSorted: false
         };
     }
 
-    nextSquareState = () => {
-        return this.state.xIsNext ? "X" : "O"
-    };
+    nextSquareState = () => this.state.xIsNext ? "X" : "O";
 
-    handleClick(squarePosition) {
+    toggleSort = () => this.setState({isMovesReverseSorted: !this.state.isMovesReverseSorted});
+
+    jumpTo = (step) => this.setState({ stepNumber: step, xIsNext: (step % 2) === 0 });
+
+    handleClick = (squarePosition) => {
         let initialStep = 0;
         let nextStep = this.state.stepNumber + 1;
         const history = this.state.history.slice(initialStep, nextStep);
@@ -36,47 +39,18 @@ class Game extends React.Component {
             stepNumber: history.length,
             xIsNext: !this.state.xIsNext
         });
-    }
+    };
 
-    jumpTo(step) {
-        this.setState({
-            stepNumber: step,
-            xIsNext: (step % 2) === 0
-        });
-    }
-
-    render() {
-        const history = this.state.history;
-        const current = history[this.state.stepNumber];
-        const winner = calculateWinner(current.squares);
-        let status = this.getStatus(winner, history);
-        const moves = this.getHistoriesButtons(history);
-
-        return (
-            <div className="game">
-                <div className="game-board">
-                    <Board
-                        squares={current.squares}
-                        onClick={i => this.handleClick(i)}
-                    />
-                </div>
-                <div className="game-info">
-                    <div>{status}</div>
-                    <ol>{moves}</ol>
-                </div>
-            </div>
-        );
-    }
-
-    getHistoriesButtons(history) {
-        const moves = history.map((step, move) => {
+    getHistoriesButtons = (history) => {
+        return history.map((step, move) => {
             let desc;
-            if (move === this.state.stepNumber ) {
-                desc = <b>{'Go to move #' + move + ":" + step.coordinates} </b>
-            }else if(move) {
-                desc = 'Go to move #' + move + ":" + step.coordinates
-            }else {
+
+            if (move === 0) {
                 desc = 'Go to game start'
+            }else if (move === this.state.stepNumber) {
+                desc = <b>{'Go to move #' + move + ":" + step.coordinates} </b>
+            }else {
+                desc = 'Go to move #' + move + ":" + step.coordinates
             }
 
             return (
@@ -85,10 +59,9 @@ class Game extends React.Component {
                 </li>
             );
         });
-        return moves;
-    }
+    };
 
-    getStatus(winner, history) {
+    getStatus = (winner, history) => {
         let status;
 
         if (winner) {
@@ -99,6 +72,39 @@ class Game extends React.Component {
             status = "Next player: " + this.nextSquareState()
         }
         return status;
+    };
+
+    render() {
+        const history = this.state.history;
+        const current = history[this.state.stepNumber];
+        const winner = calculateWinner(current.squares);
+        let status = this.getStatus(winner, history);
+        let isReverseSorted = this.state.isMovesReverseSorted;
+        const moves = this.getHistoriesButtons(history);
+
+        return (
+            <div className="game">
+                <div className="game-board">
+                    <Board
+                        squares={current.squares}
+                        onClick={i => this.handleClick(i)}
+                    />
+                </div>
+
+                <div className="game-info">
+                    <div className="status">{status}</div>
+                    <div>
+                        <p> Sort: {isReverseSorted ? 'Decending': 'Acending'}</p>
+                        <button className="sort" onClick={this.toggleSort}>sort</button>
+
+                        <ol reversed={isReverseSorted ? 'reversed' : ''}>
+                            {isReverseSorted ? moves.reverse() : moves}
+                        </ol>
+                    </div>
+
+                </div>
+            </div>
+        );
     }
 }
 
