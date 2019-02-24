@@ -1,6 +1,8 @@
 import React from 'react';
 import Square from './square';
 
+const boardSize = 3;
+
 class Board extends React.Component {
     renderSquare(position) {
         return (
@@ -12,24 +14,24 @@ class Board extends React.Component {
     }
 
     render() {
+        const rows = Array(boardSize);
+        for (let i = 0; i < boardSize; i++) {
+            const squares = Array(boardSize);
+
+            for (let j = 0; j < boardSize; j++) {
+                const index = i * boardSize + j;
+                squares[j] = this.renderSquare(index)
+            }
+
+            rows[i] = (
+                <div key={i} className="board-row">
+                    {squares}
+                </div>
+            )
+        }
+
         return (
-            <div>
-                <div className="board-row">
-                    {this.renderSquare(0)}
-                    {this.renderSquare(1)}
-                    {this.renderSquare(2)}
-                </div>
-                <div className="board-row">
-                    {this.renderSquare(3)}
-                    {this.renderSquare(4)}
-                    {this.renderSquare(5)}
-                </div>
-                <div className="board-row">
-                    {this.renderSquare(6)}
-                    {this.renderSquare(7)}
-                    {this.renderSquare(8)}
-                </div>
-            </div>
+            <div>{rows}</div>
         );
     }
 }
