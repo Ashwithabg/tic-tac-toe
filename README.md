@@ -1,2 +1,3 @@
-Implements TicTacToe game
-To Run app: yarn start
+Implements TicTacToe game.
+
+* Run app: `yarn start`
